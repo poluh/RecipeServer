@@ -21,7 +21,7 @@ public class Network {
     private void deployNetwork() {
         try {
             List<String> neuronsWeightInFile;
-            Pattern pattern = Pattern.compile("\\d");
+            var pattern = Pattern.compile("\\d");
             neuronsWeightInFile =
                     Files.readAllLines(Paths.get("src/com/main/java/logic/network/NeuronsWeight.txt"));
 
@@ -43,7 +43,7 @@ public class Network {
     }
 
     private void detecting(int[] values) {
-        for (Layer layer : layers) {
+        for (var layer : layers) {
             layer.addAllSignals(values);
             if (layer.getResult() > 0.5) {
                 this.result = layers.indexOf(layer);
@@ -56,15 +56,6 @@ public class Network {
     public Network(BufferedImage image) {
         if (layers.isEmpty()) deployNetwork();
         ImagePreprocessor imagePreprocessor = new ImagePreprocessor(image);
-        /*imagePreprocessor.cropImage();
-        *//*imagePreprocessor.devidedIntoSeveralImages();
-        System.out.println(imagePreprocessor.getOtherImagePreprocessors().size());
-        for (ImagePreprocessor value : imagePreprocessor.getOtherImagePreprocessors()) {
-            value.cropImage();
-            imagePreprocessor.resize(imagePreprocessor.getImage(), 50, 50);
-            imagePreprocessor.saveImage(imagePreprocessor.getImage(), imagePreprocessor.getImage().toString() + ".png");
-            detecting(imagePreprocessor.getImageSignals());
-        }*/
         imagePreprocessor.cropImage();
         imagePreprocessor.resize(imagePreprocessor.getImage(), 50, 50);
         detecting(imagePreprocessor.getImageSignals());

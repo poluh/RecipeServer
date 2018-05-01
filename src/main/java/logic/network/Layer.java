@@ -37,7 +37,7 @@ public class Layer {
     }
 
     public String getAllWeight() {
-        StringBuilder answer = new StringBuilder();
+        var answer = new StringBuilder();
         for (Neuron neuron : this.neurons) {
             answer.append("    ").append(neuron.getWeight()).append("\n");
         }

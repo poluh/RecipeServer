@@ -20,9 +20,7 @@ public class ImagePreprocessor {
 
     private BufferedImage image;
     private int[][] allImagePixels;
-    private int[] imageSignals;
     private Set<ImagePreprocessor> otherImagePreprocessors = new HashSet<>();
-    private List<Point> pointsObject = new ArrayList<>();
     private static int WHITE_RGB = Color.WHITE.getRGB();
     private static int BLACK_RGB = Color.BLACK.getRGB();
 
@@ -54,7 +52,7 @@ public class ImagePreprocessor {
 
     public BufferedImage copy(BufferedImage image) {
         BufferedImage imageCopy = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
-        Graphics graphics = imageCopy.getGraphics();
+        var graphics = imageCopy.getGraphics();
         graphics.drawImage(image, 0, 0, null);
         graphics.dispose();
         return imageCopy;
@@ -63,9 +61,9 @@ public class ImagePreprocessor {
     public void toGrayImage() {
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
-                Color pixelColor = new Color(allImagePixels[i][j]);
-                int rgb = (pixelColor.getRed() + pixelColor.getGreen() + pixelColor.getBlue()) / 3;
-                Color newPixelColor = new Color(rgb, rgb, rgb);
+                var pixelColor = new Color(allImagePixels[i][j]);
+                var rgb = (pixelColor.getRed() + pixelColor.getGreen() + pixelColor.getBlue()) / 3;
+                var newPixelColor = new Color(rgb, rgb, rgb);
                 image.setRGB(i, j, newPixelColor.getRGB());
             }
         }
@@ -73,14 +71,14 @@ public class ImagePreprocessor {
     }
 
     public void cropImage() {
-        Point topPoint = findAnchorPoint(Course.TOP);
-        Point leftPoint = findAnchorPoint(Course.LEFT);
-        Point leftTopCropPoint = new Point(leftPoint.x, topPoint.y);
-        Point leftBottomCropPoint = new Point(leftPoint.x, findAnchorPoint(Course.BOTTOM).y);
-        Point rightTopCropPoint = new Point(findAnchorPoint(Course.RIGHT).x, topPoint.y);
+        var topPoint = findAnchorPoint(Course.TOP);
+        var leftPoint = findAnchorPoint(Course.LEFT);
+        var leftTopCropPoint = new Point(leftPoint.x, topPoint.y);
+        var leftBottomCropPoint = new Point(leftPoint.x, findAnchorPoint(Course.BOTTOM).y);
+        var rightTopCropPoint = new Point(findAnchorPoint(Course.RIGHT).x, topPoint.y);
 
-        int cropWidth = leftTopCropPoint.distance(rightTopCropPoint);
-        int cropHeight = leftTopCropPoint.distance(leftBottomCropPoint);
+        var cropWidth = leftTopCropPoint.distance(rightTopCropPoint);
+        var cropHeight = leftTopCropPoint.distance(leftBottomCropPoint);
         this.image = image.getSubimage(leftTopCropPoint.x, leftTopCropPoint.y, cropWidth, cropHeight);
         updatePixelsImage();
     }
@@ -95,16 +93,16 @@ public class ImagePreprocessor {
 
     private Point findAnchorPoint(Course course) {
 
-        int imageHeight = image.getHeight() - 2;
-        int imageWidth = image.getWidth() - 2;
+        var imageHeight = image.getHeight() - 2;
+        var imageWidth = image.getWidth() - 2;
 
-        int firstLimiter = course == Course.RIGHT || course == Course.LEFT ? imageWidth : imageHeight;
-        int secondLimiter = course == Course.TOP || course == Course.BOTTOM ? imageWidth : imageHeight;
+        var firstLimiter = course == Course.RIGHT || course == Course.LEFT ? imageWidth : imageHeight;
+        var secondLimiter = course == Course.TOP || course == Course.BOTTOM ? imageWidth : imageHeight;
 
         if (course == Course.LEFT || course == Course.TOP) {
             for (int i = 1; i < firstLimiter; i++) {
                 for (int j = 1; j < secondLimiter; j++) {
-                    Point answerPoint = isCorrectedPoint(i, j, course);
+                    var answerPoint = isCorrectedPoint(i, j, course);
                     if (!answerPoint.equals(new Point(-1, -1))) {
                         return answerPoint;
                     }
@@ -113,7 +111,7 @@ public class ImagePreprocessor {
         } else {
             for (int i = firstLimiter; i >= 1; i--) {
                 for (int j = secondLimiter; j >= 1; j--) {
-                    Point answerPoint = isCorrectedPoint(i, j, course);
+                    var answerPoint = isCorrectedPoint(i, j, course);
                     if (!answerPoint.equals(new Point(-1, -1))) {
                         return answerPoint;
                     }
@@ -124,11 +122,11 @@ public class ImagePreprocessor {
     }
 
     private Point isCorrectedPoint(int i, int j, Course course) {
-        boolean courseLeftOrRight = course == Course.LEFT || course == Course.RIGHT;
-        int xSupportPixels = courseLeftOrRight ? i : j;
-        int ySupportPixels = courseLeftOrRight ? j : i;
-        int topLeftPixel = allImagePixels[xSupportPixels - 1][ySupportPixels - 1];
-        int bottomRightPixel = allImagePixels[xSupportPixels + 1][ySupportPixels + 1];
+        var courseLeftOrRight = course == Course.LEFT || course == Course.RIGHT;
+        var xSupportPixels = courseLeftOrRight ? i : j;
+        var ySupportPixels = courseLeftOrRight ? j : i;
+        var topLeftPixel = allImagePixels[xSupportPixels - 1][ySupportPixels - 1];
+        var bottomRightPixel = allImagePixels[xSupportPixels + 1][ySupportPixels + 1];
         if (topLeftPixel - bottomRightPixel != 0) {
             return new Point(xSupportPixels, ySupportPixels);
         }
@@ -137,10 +135,10 @@ public class ImagePreprocessor {
 
     public void binarizaid() {
         brightnessOfPixels();
-        int treshold = searchTresholdBinarizaid();
+        var threshold = searchTresholdBinarizaid();
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
-                if (allImagePixels[i][j] > treshold) {
+                if (allImagePixels[i][j] > threshold) {
                     image.setRGB(i, j, WHITE_RGB);
                 } else {
                     image.setRGB(i, j, BLACK_RGB);
@@ -151,11 +149,11 @@ public class ImagePreprocessor {
     }
 
     private int searchTresholdBinarizaid() {
-        int maxBrightness = 255;
-        int minBrightness = 0;
+        var maxBrightness = 255;
+        var minBrightness = 0;
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
-                int currentBrightness = allImagePixels[i][j];
+                var currentBrightness = allImagePixels[i][j];
                 maxBrightness = Math.max(currentBrightness, maxBrightness);
                 minBrightness = Math.min(currentBrightness, minBrightness);
             }
@@ -164,37 +162,37 @@ public class ImagePreprocessor {
     }
 
     private int[] createBarChart(int maxBrightness, int minBrightness) {
-        int barChartSize = maxBrightness - minBrightness + 1;
-        int[] barChart = new int[barChartSize];
+        var barChartSize = maxBrightness - minBrightness + 1;
+        var barChart = new int[barChartSize];
         for (int i = 0; i < image.getHeight() * image.getWidth(); i++) {
-            int x = (i < image.getWidth()) ? i : (i % image.getWidth());
-            int y = (x == i) ? 0 : (i / image.getWidth());
+            var x = (i < image.getWidth()) ? i : (i % image.getWidth());
+            var y = (x == i) ? 0 : (i / image.getWidth());
             barChart[allImagePixels[x][y] - minBrightness]++;
         }
         return barChart;
     }
 
     private int thresholdCounting(int maxBrightness, int minBrightness) {
-        int[] barChart = createBarChart(maxBrightness, minBrightness);
-        int sumAllColumnHeights = 0;
-        int sumAllCHAndMiddle = 0;
+        var barChart = createBarChart(maxBrightness, minBrightness);
+        var sumAllColumnHeights = 0;
+        var sumAllCHAndMiddle = 0;
         for (int i = 0; i <= maxBrightness - minBrightness; i++) {
             sumAllColumnHeights += barChart[i];
             sumAllCHAndMiddle += i * barChart[i];
         }
 
-        double maxSigma = -1;
-        int threshold = 0;
-        int alpha = 0;
-        int beta = 0;
+        var maxSigma = -1.0;
+        var threshold = 0;
+        var alpha = 0;
+        var beta = 0;
         for (int i = 0; i < maxBrightness - minBrightness; i++) {
             alpha += i * barChart[i];
             beta += barChart[i];
-            double probability = (double) beta / sumAllColumnHeights;
-            double intermediateMiddleSum = (double) alpha / beta -
+            var probability = (double) beta / sumAllColumnHeights;
+            var intermediateMiddleSum = (double) alpha / beta -
                     (double) (sumAllCHAndMiddle - alpha) /
                             (sumAllColumnHeights - beta);
-            double sigma = probability * (1 - probability) * intermediateMiddleSum * intermediateMiddleSum;
+            var sigma = probability * (1 - probability) * intermediateMiddleSum * intermediateMiddleSum;
 
             if (sigma > maxSigma) {
                 maxSigma = sigma;
@@ -206,7 +204,7 @@ public class ImagePreprocessor {
 
 
     private void updatePixelsImage() {
-        int[][] allPixels = new int[image.getWidth()][image.getHeight()];
+        var allPixels = new int[image.getWidth()][image.getHeight()];
 
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
@@ -217,7 +215,7 @@ public class ImagePreprocessor {
     }
 
     private void brightnessOfPixels() {
-        int[][] brightnessOfPixels = new int[image.getWidth()][image.getHeight()];
+        var brightnessOfPixels = new int[image.getWidth()][image.getHeight()];
 
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
@@ -248,7 +246,7 @@ public class ImagePreprocessor {
     }
 
     public int[] getImageSignals() {
-        imageSignals = new int[Network.NUMBER_OF_NEURON];
+        var imageSignals = new int[Network.NUMBER_OF_NEURON];
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
                 imageSignals[i * image.getWidth() + j] = image.getRGB(i, j) == WHITE_RGB ? 1 : 0;
@@ -270,7 +268,7 @@ public class ImagePreprocessor {
             if (oneLane.size() == 1) {
                 setList.add(oneLane);
                 if (setList.size() == 20) {
-                    BufferedImage subImage = copy(image.getSubimage(0, 0, i, image.getHeight()));
+                    var subImage = copy(image.getSubimage(0, 0, i, image.getHeight()));
                     otherImagePreprocessors.add(
                             new ImagePreprocessor(subImage));
                     image = image.getSubimage(i, 0, image.getWidth() - subImage.getWidth(), image.getHeight());
