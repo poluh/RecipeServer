@@ -1,6 +1,3 @@
 Manifest-Version: 1.0
-Class-Path: asm-6.1.1.jar junit-platform-commons-1.0.0.jar apiguardian
- -api-1.0.0.jar thumbnailator-0.4.8.jar opentest4j-1.0.0.jar junit-jup
- iter-api-5.0.0.jar
 Main-Class: Main
 

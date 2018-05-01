@@ -45,11 +45,11 @@ public class Network {
     private void detecting(int[] values) {
         for (var layer : layers) {
             layer.addAllSignals(values);
-            if (layer.getResult() > 0.45) {
+            if (layer.getResult() > 0.47) {
                 allResult.put(layer.getResult(), layers.indexOf(layer));
             }
         }
-
+        if (allResult.isEmpty()) allResult.put(-1.0, -1);
     }
 
     public Network(BufferedImage image) {
@@ -65,7 +65,7 @@ public class Network {
     }
 
     public int getMostLikelyResult() {
-        var maxLikely = 0.0;
+        var maxLikely = -1.0;
         for (var entry : allResult.entrySet()) {
             maxLikely = Math.max(entry.getKey(), maxLikely);
         }

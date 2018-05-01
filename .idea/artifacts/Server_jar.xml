@@ -1,16 +1,15 @@
 <component name="ArtifactManager">
-  <artifact name="Server:jar">
+  <artifact type="jar" name="Server:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/Server_jar</output-path>
-    <root id="root">
-      <element id="archive" name="Server.jar">
-        <element id="module-output" name="Server" />
-      </element>
-      <element id="library" level="project" name="Maven: org.ow2.asm:asm:6.1.1" />
-      <element id="library" level="project" name="Maven: org.junit.platform:junit-platform-commons:1.0.0" />
-      <element id="library" level="project" name="Maven: org.apiguardian:apiguardian-api:1.0.0" />
-      <element id="library" level="project" name="Maven: net.coobird:thumbnailator:0.4.8" />
-      <element id="library" level="project" name="Maven: org.opentest4j:opentest4j:1.0.0" />
-      <element id="library" level="project" name="Maven: org.junit.jupiter:junit-jupiter-api:5.0.0" />
+    <root id="archive" name="Server.jar">
+      <element id="module-output" name="Server" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/ow2/asm/asm/6.1.1/asm-6.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/platform/junit-platform-commons/1.0.0/junit-platform-commons-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apiguardian/apiguardian-api/1.0.0/apiguardian-api-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/net/coobird/thumbnailator/0.4.8/thumbnailator-0.4.8.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/googlecode/json-simple/json-simple/1.1.1/json-simple-1.1.1.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/opentest4j/opentest4j/1.0.0/opentest4j-1.0.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/junit/jupiter/junit-jupiter-api/5.0.0/junit-jupiter-api-5.0.0.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

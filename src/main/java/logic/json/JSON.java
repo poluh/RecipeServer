@@ -1,7 +1,7 @@
 package logic.json;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,10 +23,13 @@ public class JSON {
         var allResultArray = new JSONArray();
 
         for (var entry : allResult.entrySet()) {
-            allResultArray.put(new JSONObject().put(String.valueOf(entry.getValue()), entry.getKey()));
+            var resultObj = new JSONObject();
+            resultObj.put(entry.getValue(), entry.getKey()) ;
+            allResultArray.add(resultObj);
         }
         mainJSON.put("allResult", allResultArray);
         mainJSON.put("mostLikelyResult", mostLikelyResult);
+
         return mainJSON;
     }
 
