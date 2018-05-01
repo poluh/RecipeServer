@@ -17,19 +17,17 @@ public class Network {
     private double result;
 
     public static int NUMBER_OF_NEURON = 2500;
+    public static int IMAGE_SIZE = 50;
 
     private void deployNetwork() {
         try {
-            List<String> neuronsWeightInFile;
-            var pattern = Pattern.compile("\\d");
-            neuronsWeightInFile =
-                    Files.readAllLines(Paths.get("src/com/main/java/logic/network/NeuronsWeight.txt"));
+            var neuronsWeightInFile =
+                    Files.readAllLines(Paths.get("weights/NeuronsWeight.txt"));
 
-            neuronsWeightInFile.forEach(string -> {
-                if (!pattern.matcher(string).matches() && !string.isEmpty()) {
-                    neuronsWeight.add(Double.valueOf(string.replace("    ", "")));
-                }
-            });
+            neuronsWeightInFile
+                    .stream()
+                    .filter(line -> line.length() != 1 && !line.isEmpty())
+                    .forEach(line -> neuronsWeight.add(Double.valueOf(line.replaceAll("\\s+", ""))));
             for (int i = 0; i < 10; ++i) {
                 List<Neuron> neurons = new ArrayList<>();
                 for (int j = 0; j < NUMBER_OF_NEURON; ++j) {
@@ -38,7 +36,7 @@ public class Network {
                 layers.add(new Layer(neurons));
             }
         } catch (IOException e) {
-            System.out.println("Something went wrong");
+            System.err.println("Something went wrong");
         }
     }
 
@@ -55,9 +53,9 @@ public class Network {
 
     public Network(BufferedImage image) {
         if (layers.isEmpty()) deployNetwork();
-        ImagePreprocessor imagePreprocessor = new ImagePreprocessor(image);
+        var imagePreprocessor = new ImagePreprocessor(image);
         imagePreprocessor.cropImage();
-        imagePreprocessor.resize(imagePreprocessor.getImage(), 50, 50);
+        imagePreprocessor.resize(imagePreprocessor.getImage(), IMAGE_SIZE, IMAGE_SIZE);
         detecting(imagePreprocessor.getImageSignals());
     }
 

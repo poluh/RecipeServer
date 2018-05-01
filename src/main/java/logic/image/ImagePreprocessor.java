@@ -33,14 +33,6 @@ public class ImagePreprocessor {
         create(image);
     }
 
-    public ImagePreprocessor(String path) {
-        try {
-            create(ImageIO.read(new File(path)));
-        } catch (IOException e) {
-            throw new IllegalArgumentException("Error open image");
-        }
-    }
-
     public void resize(BufferedImage img, int newW, int newH) {
         try {
             this.image = Thumbnails.of(img).forceSize(newW, newH).asBufferedImage();
@@ -50,7 +42,7 @@ public class ImagePreprocessor {
         }
     }
 
-    public BufferedImage copy(BufferedImage image) {
+    private BufferedImage copy(BufferedImage image) {
         BufferedImage imageCopy = new BufferedImage(image.getWidth(), image.getHeight(), image.getType());
         var graphics = imageCopy.getGraphics();
         graphics.drawImage(image, 0, 0, null);
@@ -58,6 +50,7 @@ public class ImagePreprocessor {
         return imageCopy;
     }
 
+    // To future
     public void toGrayImage() {
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
@@ -133,6 +126,7 @@ public class ImagePreprocessor {
         return new Point(-1, -1);
     }
 
+    // to future
     public void binarizaid() {
         brightnessOfPixels();
         var threshold = searchTresholdBinarizaid();
@@ -229,10 +223,6 @@ public class ImagePreprocessor {
         this.allImagePixels = brightnessOfPixels;
     }
 
-    public void saveImage(BufferedImage bufferedImage) {
-        saveImage(bufferedImage, "image.png");
-    }
-
     public void saveImage(BufferedImage image, String fileName) {
         try {
             ImageIO.write(image, "PNG", new File(fileName));
@@ -256,6 +246,7 @@ public class ImagePreprocessor {
         return imageSignals;
     }
 
+    // TODO to future
     public void devidedIntoSeveralImages() {
         cropImage();
         List<Set<Integer>> setList = new ArrayList<>();

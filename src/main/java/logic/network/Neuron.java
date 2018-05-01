@@ -1,8 +1,6 @@
 package logic.network;
 
-import java.util.List;
-
-public class Neuron {
+class Neuron {
 
     private double weight = 0;
     private int input;
@@ -13,23 +11,15 @@ public class Neuron {
         this.weight = weight;
     }
 
-    public double getWeight() {
+    double getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
-        this.weight = weight;
-    }
-
-    public double getInput() {
-        return input;
-    }
-
-    public void setInput(int input) {
+    void setInput(int input) {
         this.input = input;
     }
 
-    public double getOutput() {
+    double getOutput() {
         return input * weight;
     }
 }
