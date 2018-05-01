@@ -3,31 +3,33 @@ package logic.network;
 import logic.image.ImagePreprocessor;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Pattern;
+import java.io.InputStreamReader;
+import java.util.*;
 
 public class Network {
 
     private static List<Double> neuronsWeight = new ArrayList<>();
     private List<Layer> layers = new ArrayList<>();
-    private double result;
+    private Map<Double, Integer> allResult = new HashMap<>();
+    private int mostLikelyResult;
 
-    public static int NUMBER_OF_NEURON = 2500;
-    public static int IMAGE_SIZE = 50;
+    public final static int NUMBER_OF_NEURON = 2500;
+    private final static int IMAGE_SIZE = 50;
+    private final static String pathToWeights = "/weights/NeuronsWeight.txt";
 
     private void deployNetwork() {
         try {
-            var neuronsWeightInFile =
-                    Files.readAllLines(Paths.get("weights/NeuronsWeight.txt"));
+
+            var inputStream = getClass().getResourceAsStream(pathToWeights);
+            var inputStreamReader = new InputStreamReader(inputStream, "UTF-8");
+            var neuronsWeightInFile = new BufferedReader(inputStreamReader).lines();
 
             neuronsWeightInFile
-                    .stream()
                     .filter(line -> line.length() != 1 && !line.isEmpty())
                     .forEach(line -> neuronsWeight.add(Double.valueOf(line.replaceAll("\\s+", ""))));
+
             for (int i = 0; i < 10; ++i) {
                 List<Neuron> neurons = new ArrayList<>();
                 for (int j = 0; j < NUMBER_OF_NEURON; ++j) {
@@ -36,16 +38,15 @@ public class Network {
                 layers.add(new Layer(neurons));
             }
         } catch (IOException e) {
-            System.err.println("Something went wrong");
+            System.err.println("Something went wrong " + e.getLocalizedMessage());
         }
     }
 
     private void detecting(int[] values) {
         for (var layer : layers) {
             layer.addAllSignals(values);
-            if (layer.getResult() > 0.5) {
-                this.result = layers.indexOf(layer);
-                return;
+            if (layer.getResult() > 0.45) {
+                allResult.put(layer.getResult(), layers.indexOf(layer));
             }
         }
 
@@ -59,7 +60,15 @@ public class Network {
         detecting(imagePreprocessor.getImageSignals());
     }
 
-    public double getResult() {
-        return result;
+    public Map<Double, Integer> getAllResult() {
+        return allResult;
+    }
+
+    public int getMostLikelyResult() {
+        var maxLikely = 0.0;
+        for (var entry : allResult.entrySet()) {
+            maxLikely = Math.max(entry.getKey(), maxLikely);
+        }
+        return allResult.get(maxLikely);
     }
 }
