@@ -5,12 +5,14 @@ import java.util.Objects;
 
 public class Layer {
     private List<Neuron> neurons;
+    private boolean isEmpty = true;
 
     Layer(List<Neuron> neurons) {
         this.neurons = neurons;
     }
 
     void addAllSignals(int[] signals) {
+        isEmpty = false;
         for (int i = 0; i < Network.NUMBER_OF_NEURON; i++) {
             neurons.get(i).setInput(signals[i]);
         }
@@ -31,5 +33,9 @@ public class Layer {
     @Override
     public int hashCode() {
         return Objects.hash(neurons);
+    }
+
+    public boolean isEmpty() {
+        return isEmpty;
     }
 }

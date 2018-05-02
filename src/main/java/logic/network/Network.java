@@ -11,7 +11,7 @@ import java.util.*;
 public class Network {
 
     private static List<Double> neuronsWeight = new ArrayList<>();
-    private List<Layer> layers = new ArrayList<>();
+    private Layer[] layers = new Layer[10];
     private Map<Double, Integer> allResult = new HashMap<>();
     private int mostLikelyResult;
 
@@ -30,30 +30,38 @@ public class Network {
                     .filter(line -> line.length() != 1 && !line.isEmpty())
                     .forEach(line -> neuronsWeight.add(Double.valueOf(line.replaceAll("\\s+", ""))));
 
+            Thread[] threads = new Thread[10];
             for (int i = 0; i < 10; ++i) {
-                List<Neuron> neurons = new ArrayList<>();
-                for (int j = 0; j < NUMBER_OF_NEURON; ++j) {
-                    neurons.add(new Neuron(neuronsWeight.get(i * NUMBER_OF_NEURON + j)));
-                }
-                layers.add(new Layer(neurons));
+                int finalI = i;
+                threads[i] = new Thread(() -> addWeights(finalI));
+                threads[i].start();
             }
         } catch (IOException e) {
             System.err.println("Something went wrong " + e.getLocalizedMessage());
         }
     }
 
+    private void addWeights(int indexLayer) {
+        List<Neuron> neurons = new ArrayList<>();
+        for (int j = 0; j < NUMBER_OF_NEURON; ++j) {
+            neurons.add(new Neuron(neuronsWeight.get(indexLayer * NUMBER_OF_NEURON + j)));
+        }
+        layers[indexLayer] = new Layer(neurons);
+    }
+
     private void detecting(int[] values) {
-        for (var layer : layers) {
+        for (int i = 0; i < layers.length; i++) {
+            Layer layer = layers[i];
             layer.addAllSignals(values);
             if (layer.getResult() > 0.47) {
-                allResult.put(layer.getResult(), layers.indexOf(layer));
+                allResult.put(layer.getResult(), i);
             }
         }
         if (allResult.isEmpty()) allResult.put(-1.0, -1);
     }
 
     public Network(BufferedImage image) {
-        if (layers.isEmpty()) deployNetwork();
+        if (layers[0].isEmpty()) deployNetwork();
         var imagePreprocessor = new ImagePreprocessor(image);
         imagePreprocessor.cropImage();
         imagePreprocessor.resize(imagePreprocessor.getImage(), IMAGE_SIZE, IMAGE_SIZE);
