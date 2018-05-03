@@ -14,7 +14,6 @@ public class Network {
     private Layer[] layers= new Layer[10];
     private Thread[] threads = new Thread[10];
     private Map<Double, Integer> allResult = new HashMap<>();
-    private int mostLikelyResult;
 
     public final static int NUMBER_OF_NEURON = 2500;
     private final static int IMAGE_SIZE = 50;
@@ -51,14 +50,21 @@ public class Network {
     }
 
     private void detecting(int[] values) {
+
         for (int i = 0; i < layers.length; i++) {
-            Layer layer = layers[i];
-            layer.addAllSignals(values);
-            if (layer.getResult() > 0.47) {
-                allResult.put(layer.getResult(), i);
-            }
+            int finalI = i;
+            threads[i] = new Thread(() -> layerDetecting(values, finalI));
+            threads[i].start();
         }
         if (allResult.isEmpty()) allResult.put(-1.0, -1);
+    }
+
+    private void layerDetecting(int[] values, int layerIndex) {
+        Layer layer = layers[layerIndex];
+        layer.addAllSignals(values);
+        if (layer.getResult() > 0.47) {
+            allResult.put(layer.getResult(), layerIndex);
+        }
     }
 
     public Network(BufferedImage image) {
