@@ -221,14 +221,6 @@ public class ImagePreprocessor {
         this.allImagePixels = brightnessOfPixels;
     }
 
-    public void saveImage(BufferedImage image, String fileName) {
-        try {
-            ImageIO.write(image, "PNG", new File(fileName));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public BufferedImage getImage() {
         return image;
     }
@@ -268,21 +260,6 @@ public class ImagePreprocessor {
                 setList.clear();
             }
         }
-    }
-
-    public static BufferedImage createPicture(List<Point> points, int height, int width) {
-        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if (points.contains(new Point(i, j))) {
-                    image.setRGB(i, j, java.awt.Color.BLACK.getRGB());
-                } else {
-                    image.setRGB(i, j, java.awt.Color.WHITE.getRGB());
-                }
-            }
-        }
-
-        return image;
     }
 
     public Set<ImagePreprocessor> getOtherImagePreprocessors() {

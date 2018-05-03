@@ -19,12 +19,10 @@ public class Main {
         try {
             var image = ImageIO.read(new File(pathToImage));
             var network = new Network(image);
-            ImagePreprocessor imagePreprocessor = new ImagePreprocessor(image);
-            imagePreprocessor.saveImage(imagePreprocessor.getImage(), "Image.jpg");
-            new JSON(network.getAllResult(), network.getMostLikelyResult()).saveJSON(resultFileName);
+            JSON json = new JSON(network.getAllResult(), network.getMostLikelyResult());
 
             System.out.println("Most likely result = " + network.getMostLikelyResult());
-            System.out.println("Look all results on " +  userDirectory + resultFileName);
+            System.out.println("All results = " + json.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -58,10 +58,9 @@ public class JSON {
         return mainJSON;
     }
 
-    public void saveJSON(String path) throws IOException {
-        var writer = new FileWriter(new File(path));
-        writer.write(toJSONFormat().toString());
-        writer.close();
+    @Override
+    public String toString() {
+        return toJSONFormat().toString();
     }
 
 }

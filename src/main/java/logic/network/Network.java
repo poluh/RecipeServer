@@ -11,7 +11,8 @@ import java.util.*;
 public class Network {
 
     private static List<Double> neuronsWeight = new ArrayList<>();
-    private Layer[] layers = new Layer[10];
+    private Layer[] layers= new Layer[10];
+    private Thread[] threads = new Thread[10];
     private Map<Double, Integer> allResult = new HashMap<>();
     private int mostLikelyResult;
 
@@ -30,7 +31,7 @@ public class Network {
                     .filter(line -> line.length() != 1 && !line.isEmpty())
                     .forEach(line -> neuronsWeight.add(Double.valueOf(line.replaceAll("\\s+", ""))));
 
-            Thread[] threads = new Thread[10];
+
             for (int i = 0; i < 10; ++i) {
                 int finalI = i;
                 threads[i] = new Thread(() -> addWeights(finalI));
@@ -61,10 +62,15 @@ public class Network {
     }
 
     public Network(BufferedImage image) {
-        if (layers[0].isEmpty()) deployNetwork();
+        deployNetwork();
+        for (var thread : threads) {
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
         var imagePreprocessor = new ImagePreprocessor(image);
-        imagePreprocessor.cropImage();
-        imagePreprocessor.resize(imagePreprocessor.getImage(), IMAGE_SIZE, IMAGE_SIZE);
         detecting(imagePreprocessor.getImageSignals());
     }
 
