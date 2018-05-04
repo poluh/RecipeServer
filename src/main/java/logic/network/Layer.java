@@ -26,7 +26,7 @@ public class Layer {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Layer layer = (Layer) o;
+        var layer = (Layer) o;
         return Objects.equals(neurons, layer.neurons);
     }
 

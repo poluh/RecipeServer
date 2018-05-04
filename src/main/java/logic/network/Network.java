@@ -69,6 +69,13 @@ public class Network {
 
     public Network(BufferedImage image) {
         deployNetwork();
+        waitThreads();
+        var imagePreprocessor = new ImagePreprocessor(image);
+        detecting(imagePreprocessor.getImageSignals());
+        waitThreads();
+    }
+
+    private void waitThreads() {
         for (var thread : threads) {
             try {
                 thread.join();
@@ -76,8 +83,6 @@ public class Network {
                 e.printStackTrace();
             }
         }
-        var imagePreprocessor = new ImagePreprocessor(image);
-        detecting(imagePreprocessor.getImageSignals());
     }
 
     public Map<Double, Integer> getAllResult() {
